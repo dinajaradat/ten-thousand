@@ -5,7 +5,7 @@ class GameLogic:
     @staticmethod
     def roll_dice(value):
         values = []
-        for i in range(value):
+        for i in range(5):
             number = random.randint(1,6)
             values.append(number)
         return values
