@@ -102,7 +102,7 @@ class GameLogic:
 
             
         if len(pairs) == 3:
-            score += 1500
+            score = 1500
         return score
         
     
@@ -115,5 +115,14 @@ class GameLogic:
           return True
         else:
           return False
+    
 
+    @staticmethod
+    def get_scorers(t):
+       listt =[]
+       for  i in t:
+         if(GameLogic.calculate_score((i,))!=0):
+           listt.append(i)
+       tt = tuple(listt)
+       return tt
         
