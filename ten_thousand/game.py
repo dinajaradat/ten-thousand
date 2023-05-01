@@ -1,90 +1,166 @@
-# from game_logic import GameLogic
-from ten_thousand.game_logic import GameLogic
+# from ten_thousand.game_logic import GameLogic
+from game_logic import GameLogic
 
+calculater = GameLogic.calculate_score
 
-def play(roller = GameLogic.roll_dice ,round_number=3):  #roller: A function that rolls dice and returns a list of values, round_number (int): The number of rounds to play.
-    # global dice_roller
-    # dice_roller = roller
-    score = 0
-    dic_round = 0
-    Total_score = 0 
-    
+dice_roller = GameLogic.roll_dice
+
+validate = GameLogic.validate_keepers
+
+def play (roller = GameLogic.roll_dice):
+
+    """
+    this function starts the game when called
+    """
+    '''
+    to get the numbers that inside .txt to use it in the test cases
+    '''
+    global dice_roller
+    dice_roller = roller
+
     print("Welcome to Ten Thousand")
-    input1 = input("(y)es to play or (n)o to decline\n> ")
-    if input1 == "n":
-        print ("OK. Maybe another time")
-        return 
-    elif input1 != "y":
-        return ("Invalid input. Please try again.")
+    print("(y)es to play or (n)o to decline")
 
-    while round_number > 0:
-     #    print(f"Your current score is {str(score)} points.")
-        dic_round +=1
-        round_number -=1
-        print(f"Starting round {str(dic_round)}")
+    input_user = input('> ')
+    if input_user == "n":
+        end_game()
+    if input_user  == 'y':
+        start_round(round = 1 ,total=0, dice = 6 , point=0)
 
-     #    dices = GameLogic.roll_dice(6)
-        #print (dices)
-     #    dice_str = " ".join(str(num) for num in dice_roller(6))
-        #print (dice_str)
-        print(f"Rolling 6 dice...")
-        formatted_roll = format_roller(roller(6))
-        print (formatted_roll)
+def end_game ():
+        """
+        this function return a answer once the user wrote n in the beganing of runing this code
+        """
         
-   
-        print("Enter dice to keep, or (q)uit:") # selecting a subset to keep for points OR quit
-
-        input2 = input("> ")
-        rem_input2 = input2.replace("> ", "").strip()    # replace() to remove the string "> " from the beginning , strip() method to remove any leading or trailing whitespace characters
-        if rem_input2 == "q":
-               print(f"Thanks for playing. You earned {str(score)} points")  # bank the current points and end the round.
-               return
-        else:
-            dice_remaining = 6 - (len(input2))
-            #print (dice)
-            if len(input2) == 1:
-                    banked = GameLogic.calculate_score((int(input2),))
-            else :
-                    dice_list = [int(d) for d in input2]
-                    #print(dice_list)
-                    dice_tuple = tuple(dice_list)
-                    #print(dice_tuple)
-                    banked = GameLogic.calculate_score(dice_tuple)
-                   
-              
-            print ("You have "+ str(banked) +" unbanked points and "+ str(dice_remaining) +" dice remaining")
-            Total_score += banked
+        return print('OK. Maybe another time') 
 
 
 
-        print("(r)oll again, (b)ank your points or (q)uit:")
-        input3 = input("> ")
-        rem_input3 = input3.replace("> ", "").strip()
-        if rem_input3 == "q":
-               print(f"Thanks for playing. You earned {str(score)} points")
-               return
-            
-        elif rem_input3 == "b":
-             print("You banked "+ str(banked) +" points in round "+str(dic_round))
-             print("Total score is "+ str(Total_score) +" points")   # total score is the sum of scores from each round.
-             score += banked
-            
-            
+def start_round(round = 1 , total = 0 ,point = 0 , dice = 6):
+    '''
+    this function will start the game once the plyer enterd y 
+    '''
+    first_roll = dice_roller(dice) 
+
+
+    random_num = ''
+    for i in first_roll:
+         random_num += str(i)+" "
+
+    print(f'Starting round {round}')
+    print(f'Rolling {dice} dice...')
+    print(f'*** {random_num}***')
+    
+
+    if calculater(first_roll) == 0:
+              print("****************************************")
+              print("**        Zilch!!! Round over         **")
+              print("****************************************")
+              print(f"You banked 0 points in round {round}")
+              print(f"Total score is {total} points")
+              round +=1
+              print(total)
+            #   print(f'Starting round {round}')
+            #   point = 0
+              return start_round(round,total,dice=6)
+    print('Enter dice to keep, or (q)uit:')
+
+    
+    user_choices = input ('> ')
+    if user_choices =='q':
+        quit_game(total)
+
+    
+
+    else :
+         dice_to_keep = tuple(int(x) for x in user_choices) 
+
+        #  print (first_roll,dice_to_keep)
+        #  print (validate(first_roll,dice_to_keep))
+          
+         if  validate(first_roll,dice_to_keep) == False:
+                   while validate(first_roll,dice_to_keep) == False:
+                          print ("Cheater!!! Or possibly made a typo...")
+                          print(f'*** {random_num}***')
+                          print('Enter dice to keep, or (q)uit:')
+
+                          user_choices1 = input ('> ')
+             
+
+                          if user_choices1 =='q':
+                               quit_game(total)
+           
+                          dice_to_keep = tuple(int(x) for x in user_choices1) 
+     
+
+         
+         new_dice = dice - len(dice_to_keep) # we get the dice that we enterd in the function (6) and subtract it from the length of inputs that the plyer enterd (user_choices)
+
+
+         point += calculater(dice_to_keep) # point was 0 so we should add the points regarding the input that the users entered (using calculate score function)
+
+         total += point
+
+         print(f'You have {point} unbanked points and {new_dice} dice remaining')
+         print('(r)oll again, (b)ank your points or (q)uit:')
+         user_choices = input ('> ')
+
+         if user_choices =='q':
+             quit_game(total)
+
+         if user_choices =='b':
+              banked_choice(round , total ,point)
+         if user_choices == 'r':
+             if new_dice > 0 :
+                # point += point
+                start_round(round , total ,point,new_dice)
+             else :
+                  round +=1
+                  print('you dont have any more dices play again')
+                  start_round(round,total,point,dice=6)   
+           
+
+def banked_choice(round , total ,point):
+     '''
+     will banked the total score 
+     '''
+     print(f'You banked {point} points in round {round}')
+     total += point
+     print(f'Total score is {total} points')
+     round +=1
+     start_round(round,total)
+      
+
+def quit_game(total):
+     '''
+     this will quit the game if the plyer enterd q 
+     '''
+     print(f'Thanks for playing. You earned {total} points')
+
+
+
+# def cheat(values, dice_to_keep,random_num,total):
+#      while validate(values,dice_to_keep) == False:
+#         print ("Cheater!!! Or possibly made a typo...")
+#         print(f'*** {random_num}***')
+#         print('Enter dice to keep, or (q)uit:')
+
+#         user_choices1 = input ('> ')
+             
+
+#         if user_choices1 =='q':
+#              quit_game(total)
         
-def format_roller(dice_roller): # function takes a list of integers representing a roll of dice as input and returns a formatted string that displays the values of the dice
-    as_string = [str(value) for value in dice_roller]
-    format_roll = " ".join(as_string)
-    return f"*** {format_roll} ***"   
+#         dice_to_keep1 = tuple(int(x) for x in user_choices1) 
+#         new_dice_to_keep = dice_to_keep1
+#      return new_dice_to_keep
+     
 
-if __name__ =="__main__":
-    print(play())         
-#     pass  
-
-
-              
-              
-              
+     
 
 
 
 
+
+if __name__ == "__main__":
+    play()

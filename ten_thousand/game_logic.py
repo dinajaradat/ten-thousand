@@ -1,4 +1,5 @@
 import random
+from collections import Counter
 
 class GameLogic:
     
@@ -97,11 +98,22 @@ class GameLogic:
                 elif num_of_kinds == 6:
                     score += 4800
 
+   
+
             
         if len(pairs) == 3:
             score += 1500
         return score
         
-     
+    
+    @staticmethod
+    def validate_keepers(roll,keeper):
+        roll_counter = Counter(roll)
+        keeper_counter = Counter(keeper)
+        same = keeper_counter - roll_counter
+        if (len(same)==0):
+          return True
+        else:
+          return False
 
         
