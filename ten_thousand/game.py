@@ -1,4 +1,5 @@
 
+
 from ten_thousand.game_logic import GameLogic
 # from game_logic import GameLogic
 
@@ -12,7 +13,17 @@ scores = GameLogic.get_scorers
 rounds = 0
 flage=False
 
-def play (roller = GameLogic.roll_dice,num_rounds=5):
+
+"""
+This module implements a game called Ten Thousand. The game consists of several rounds, and in each round, a player rolls six dice. The objective of the game is to accumulate as many points as possible across the rounds.
+
+The game is started by calling the `play` function. If the player chooses to play, the function enters a loop that starts each round. In each round, the player is prompted to select some dice to keep and roll the remaining dice. The player can then choose to keep rolling or bank their accumulated points for the round. If the player scores no points on a roll, they lose their accumulated points for the round.
+
+The module contains the following functions:
+"""
+
+
+def play (roller = GameLogic.roll_dice,num_rounds=2):
 
     """
     this function starts the game when called
