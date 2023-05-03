@@ -9,8 +9,10 @@ calculater = GameLogic.calculate_score
 dice_roller = GameLogic.roll_dice
 cheat= GameLogic.validate_keepers
 scores = GameLogic.get_scorers
+rounds = 0
+flage=False
 
-def play (roller = GameLogic.roll_dice):
+def play (roller = GameLogic.roll_dice,num_rounds=5):
 
     """
     this function starts the game when called
@@ -18,6 +20,9 @@ def play (roller = GameLogic.roll_dice):
     '''
     to get the numbers that inside .txt to use it in the test cases
     '''
+    global flage
+    global rounds 
+    rounds = num_rounds
     global dice_roller
     dice_roller = roller
 
@@ -28,9 +33,10 @@ def play (roller = GameLogic.roll_dice):
     if input_user == "n":
         end_game()
     if input_user  == 'y':
-        print(f'Starting round 1')
-        start_round(round = 1 ,total=0, dice = 6 , point=0)
-
+           
+           print(f'Starting round 1')
+           start_round(round = 1 ,total=0, dice = 6 , point=0)
+        
 def end_game ():
         """
         this function return a answer once the user wrote n in the beganing of runing this code
@@ -41,6 +47,7 @@ def end_game ():
 
 
 def start_round(round = 1 , total = 0 ,point = 0 , dice = 6):
+    global flage
     '''
     this function will start the game once the plyer enterd y 
     '''
@@ -101,10 +108,15 @@ def start_round(round = 1 , total = 0 ,point = 0 , dice = 6):
          user_choices = input ('> ')
 
          if user_choices =='q':
-             quit_game(total)
+          #   flage=True
+          #   x=banked_choice(round , total ,point)
+
+
+          #   quit_game(x)
+             return quit_game(total)
 
          if user_choices =='b':
-              
+            #   print (total)
               banked_choice(round , total ,point)
          if user_choices == 'r':
              if new_dice > 0 :
@@ -119,12 +131,20 @@ def banked_choice(round , total ,point):
      '''
      will banked the total score 
      '''
-     print(f'You banked {point} points in round {round}')
+    #  print (total)
      total += point
+     if flage:
+          return total
+     print(f'You banked {point} points in round {round}')
      print(f'Total score is {total} points')
+    
+     
+     if  rounds == 1:
+           quit_game(total)
+           return 
+     
      round +=1
      print(f'Starting round {round}')
-
      start_round(round,total)
       
 
@@ -133,6 +153,7 @@ def quit_game(total):
      this will quit the game if the plyer enterd q 
      '''
      print(f'Thanks for playing. You earned {total} points')
+  
 
 
 def hot_dice2(round,total,point,new_dice):
