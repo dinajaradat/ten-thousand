@@ -119,10 +119,18 @@ class GameLogic:
 
     @staticmethod
     def get_scorers(t):
-       listt =[]
-       for  i in t:
-         if(GameLogic.calculate_score((i,))!=0):
-           listt.append(i)
-       tt = tuple(listt)
-       return tt
+      calu1 = GameLogic.calculate_score(t)
+      arr=[]
+      listt =list(t)
+      for i,val in enumerate(listt):
+          listt.pop(i)
+          calu2 = GameLogic.calculate_score(listt)
+          if calu1 != calu2:
+            arr.append(val)
+            listt.insert(i,val)
+          else:
+              listt.insert(i,val)
+
+      tt = tuple(arr)
+      return tt
         
